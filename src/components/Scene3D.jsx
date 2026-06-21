@@ -85,7 +85,10 @@ const Scene3D = forwardRef(({ speed, paused, moonsVisible }, ref) => {
     controls.minDistance = 4;
     controls.maxDistance = 200;
     controls.target.set(0, 0, 0);
-    controls.addEventListener('start', () => { container.style.cursor = 'grabbing'; });
+    controls.addEventListener('start', () => {
+      container.style.cursor = 'grabbing';
+      if (focusedPlanet) unfocus();
+    });
     controls.addEventListener('end', () => { container.style.cursor = 'grab'; });
     container.style.cursor = 'grab';
     controlsRef.current = controls;
