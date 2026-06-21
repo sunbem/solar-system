@@ -384,6 +384,10 @@ const Scene3D = forwardRef(({ speed, paused, moonsVisible }, ref) => {
         label.position.set(0, size + 0.3, 0);
         mesh.add(label);
 
+        mesh.visible = false;
+        orbitLine.visible = false;
+        label.visible = false;
+
         return { mesh, orbitLine, angle: Math.random() * Math.PI * 2, radius: orbitRadius, speed };
       }
 

@@ -8,7 +8,7 @@ function App() {
   const [speed, setSpeed] = useState(0.1);
   const [paused, setPaused] = useState(false);
   const [infoVisible, setInfoVisible] = useState(false);
-  const [moonsVisible, setMoonsVisible] = useState(true);
+  const [moonsVisible, setMoonsVisible] = useState(false);
 
   const handleKeyDown = (e) => {
     if (e.key === ' ' || e.key === 'Space') {
