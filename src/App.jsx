@@ -23,7 +23,7 @@ function App() {
 
       <div id="ui">
         <div id="title">Solar System</div>
-        <div id="watermark">Vibe Coded by Sunbeam CSE 241 using OpenCode</div>
+        <div id="watermark">Vibe Coded using OpenCode by Sunbeam Hasan</div>
         {moonsVisible && <div id="moon-disclaimer">Showing only major moons — not all moons are displayed</div>}
       </div>
 

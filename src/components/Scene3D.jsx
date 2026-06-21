@@ -278,7 +278,7 @@ const Scene3D = forwardRef(({ speed, paused, moonsVisible }, ref) => {
 
     const sunLabelDiv = document.createElement('div');
     sunLabelDiv.textContent = 'Sun';
-    sunLabelDiv.style.color = '#ffaa00';
+    sunLabelDiv.style.color = '#ffffff';
     sunLabelDiv.style.fontFamily = 'Segoe UI, Arial, sans-serif';
     sunLabelDiv.style.fontSize = '14px';
     sunLabelDiv.style.fontWeight = '600';
@@ -358,9 +358,10 @@ const Scene3D = forwardRef(({ speed, paused, moonsVisible }, ref) => {
           const a = (i / 64) * Math.PI * 2;
           pts.push(new THREE.Vector3(orbitRadius * Math.cos(a), 0, orbitRadius * Math.sin(a)));
         }
-        const orbitGeo = new THREE.BufferGeometry().setFromPoints(pts);
-        const orbitMat = new THREE.LineBasicMaterial({ color: 0x8899cc, transparent: true, opacity: 0.2 });
-        const orbitLine = new THREE.Line(orbitGeo, orbitMat);
+        const curve = new THREE.CatmullRomCurve3(pts, true);
+        const tubeGeo = new THREE.TubeGeometry(curve, 64, 0.04, 6, true);
+        const tubeMat = new THREE.MeshBasicMaterial({ color: 0x8899cc, transparent: true, opacity: 0.35 });
+        const orbitLine = new THREE.Mesh(tubeGeo, tubeMat);
         scene.add(orbitLine);
 
         const meshGeo = new THREE.SphereGeometry(size, 24, 24);
@@ -400,7 +401,7 @@ const Scene3D = forwardRef(({ speed, paused, moonsVisible }, ref) => {
       }
       if (data.name === 'Saturn') {
         moons.push(addMoon(2.5, 0.3, 0xddcc88, 2.5, 'Titan'));
-        moons.push(addMoon(1.8, 0.15, 0x99bbcc, 4.0, 'Enceladus'));
+        moons.push(addMoon(3.5, 0.15, 0x99bbcc, 4.0, 'Enceladus'));
       }
       if (data.name === 'Uranus') {
         moons.push(addMoon(2.0, 0.16, 0x8899aa, 3.0, 'Miranda'));
@@ -445,6 +446,27 @@ const Scene3D = forwardRef(({ speed, paused, moonsVisible }, ref) => {
         ring.rotation.x = Math.PI / 2.2;
         ring.rotation.z = 0.2;
         planet.add(ring);
+
+        const rockGroup = new THREE.Group();
+        const rockCount = 300;
+        for (let i = 0; i < rockCount; i++) {
+          const angle = Math.random() * Math.PI * 2;
+          const radius = innerR + Math.random() * (outerR - innerR);
+          const rockSize = 0.02 + Math.random() * 0.06;
+          const rockGeo = new THREE.DodecahedronGeometry(rockSize);
+          const rockMat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color().setHSL(0.08 + Math.random() * 0.04, 0.2, 0.3 + Math.random() * 0.3),
+            roughness: 0.9,
+            metalness: 0.1,
+          });
+          const rock = new THREE.Mesh(rockGeo, rockMat);
+          rock.position.set(radius * Math.cos(angle), radius * Math.sin(angle), (Math.random() - 0.5) * 0.03);
+          rock.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+          rockGroup.add(rock);
+        }
+        rockGroup.rotation.x = Math.PI / 2.2;
+        rockGroup.rotation.z = 0.2;
+        planet.add(rockGroup);
       }
 
       scene.add(planet);
@@ -479,7 +501,7 @@ const Scene3D = forwardRef(({ speed, paused, moonsVisible }, ref) => {
 
     const origSunEmissive = sunMat.emissive.getHex();
     const origSunEmissiveIntensity = sunMat.emissiveIntensity;
-    const hoverable = [sunMesh, ...planets.map((p) => p.mesh)];
+    const hoverable = [...planets.map((p) => p.mesh)];
     planets.forEach((p) => {
       const mat = p.mesh.material;
       p._origEmissive = mat.emissive ? mat.emissive.getHex() : 0x000000;
@@ -532,8 +554,8 @@ const Scene3D = forwardRef(({ speed, paused, moonsVisible }, ref) => {
             }
             hoveredObject = entry.mesh;
             const hm = entry.mesh.material;
-            hm.emissive.setHex(0xffffff);
-            hm.emissiveIntensity = 0.5;
+            hm.emissive.setHex(entry.data.color);
+            hm.emissiveIntensity = 0.6;
           }
         }
       } else if (hoveredObject) {
