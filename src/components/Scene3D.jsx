@@ -419,33 +419,6 @@ const Scene3D = forwardRef(({ speed, paused, moonsVisible }, ref) => {
       if (data.rings) {
         const innerR = data.size * 1.3;
         const outerR = data.size * 2.3;
-        const ringGeo = new THREE.RingGeometry(innerR, outerR, 96);
-
-        const canvas = document.createElement('canvas');
-        canvas.width = 512;
-        canvas.height = 64;
-        const ctx = canvas.getContext('2d');
-        const grad = ctx.createLinearGradient(0, 0, 512, 0);
-        grad.addColorStop(0, 'rgba(180,160,130,0.0)');
-        grad.addColorStop(0.1, 'rgba(200,180,150,0.6)');
-        grad.addColorStop(0.2, 'rgba(180,160,130,0.3)');
-        grad.addColorStop(0.35, 'rgba(210,190,160,0.8)');
-        grad.addColorStop(0.5, 'rgba(160,140,110,0.4)');
-        grad.addColorStop(0.7, 'rgba(200,180,150,0.7)');
-        grad.addColorStop(0.85, 'rgba(180,160,130,0.3)');
-        grad.addColorStop(1, 'rgba(150,130,100,0.0)');
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, 512, 64);
-
-        const ringTex = new THREE.CanvasTexture(canvas);
-        const ringMat = new THREE.MeshStandardMaterial({
-          map: ringTex, side: THREE.DoubleSide, transparent: true,
-          depthWrite: false, roughness: 0.8, metalness: 0.1,
-        });
-        const ring = new THREE.Mesh(ringGeo, ringMat);
-        ring.rotation.x = Math.PI / 2.2;
-        ring.rotation.z = 0.2;
-        planet.add(ring);
 
         const rockGroup = new THREE.Group();
         const rockCount = 300;
